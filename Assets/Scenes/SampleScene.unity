@@ -1048,9 +1048,9 @@ MonoBehaviour:
   - tile: {fileID: 11400000, guid: a8e51f3f95231cc4b8ea388a47d5acab, type: 2}
     spawnNumber: 16
   - tile: {fileID: 11400000, guid: 0aa98e8c5427fdd4592f103d7cc042a3, type: 2}
-    spawnNumber: 6
+    spawnNumber: 10
   - tile: {fileID: 11400000, guid: 27e04c99c6884a7408fae80a3786c8f1, type: 2}
-    spawnNumber: 12
+    spawnNumber: 8
   - tile: {fileID: 11400000, guid: 972a357cb7d77624fa0d4d4abe073ae9, type: 2}
     spawnNumber: 4
   - tile: {fileID: 11400000, guid: 020e9f8d8106ea24185ecc5055117d41, type: 2}
@@ -1081,6 +1081,10 @@ MonoBehaviour:
     spawnNumber: 12
   - tile: {fileID: 11400000, guid: 21028daa1e396bb4a9e58510311e2864, type: 2}
     spawnNumber: 4
+  numberOfForests: 2
+  treesTiles:
+  - {fileID: 11400000, guid: 0aa98e8c5427fdd4592f103d7cc042a3, type: 2}
+  - {fileID: 11400000, guid: 27e04c99c6884a7408fae80a3786c8f1, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

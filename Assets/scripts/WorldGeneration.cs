@@ -25,7 +25,7 @@ public class WorldGeneration : MonoBehaviour
     
     public Tilemap ground; //layer for rivers should be on the bottom
     public TileBase[] waterTiles; // list of all water tiles
-    public int numberOfRivers;
+    public int numberOfRivers; //How many rivers to generate
 
     public Tilemap grass; // layer for grass
     public TileWithSpawnRatios[] grassTilesWithRatios; // list of all grass tiles with their spawnratios
@@ -37,6 +37,8 @@ public class WorldGeneration : MonoBehaviour
     public Tilemap decoration; // Layer for decoration tiles should be on top
     public DecorationTile[] decorationTiles; // list of all decorationTiles
 
+    public int numberOfForests; // how many forests to generate
+    public TileBase[] treesTiles; // lits of possible trees in the forests
     // Start is called before the first frame update
     void Start()
     {
@@ -44,7 +46,8 @@ public class WorldGeneration : MonoBehaviour
         for (int i = 0; i < numberOfRivers; i++) generate_rivers(ref map); //Add rivers to the map on the ground layer
         generate_shores(ref map); // Generate shores
         generate_ground(grassTilesWithRatios, ref map); //Generate a map with grassTiles
-        generate_decoration(ref map);
+        for (int i = 0; i < numberOfForests; i++) generate_forests(ref map); // Generate numberOfForests forests
+        generate_decoration(ref map); // Generate everyhin else
     }
 
     // Function to generate ground from an array of tiles with their spawn ratios
@@ -323,7 +326,7 @@ public class WorldGeneration : MonoBehaviour
                         {
                             continue;
                         }
-                        else shouldplace = false; // all cells are free
+                        else shouldplace = false; // one of the cells is occupied
                     }
                 }
                 if (shouldplace) // place decoration tile and mark which tile it occupies
@@ -337,6 +340,81 @@ public class WorldGeneration : MonoBehaviour
                     }
                     decoration.SetTile(new Vector3Int(x, y, 0), tile.tile);
                 }
+            }
+        }
+    }
+
+    public void generate_forests(ref int[,] map)
+    {
+        int x, y;
+
+        int forestSize = Random.Range(15, 31); // minimum fores size of 15 forest size max size of 30
+
+        //create an indicator
+        x = Random.Range(0, mapWidth);
+        y = Random.Range(0, mapHeight);
+
+        // until placed as many trees as forestSize
+        for (int i = 0; i < forestSize; i++)
+        {
+            TileBase tree = treesTiles[(Random.Range(0, treesTiles.Length))];
+            // get the size of a tree tile
+            Sprite sprite = (tree as Tile).sprite;
+            float width = sprite.bounds.size.x; // divided by 16 as one cell has 16 pixels
+            float height = sprite.bounds.size.y; // divided by 16 as one cell has 16 pixels
+
+            bool shouldplace = true;
+            // for every cell that tree will occupy check if it isn;t already occupied
+            for (int p = 0; p < width; p++)
+            {
+                for (int q = 0; q < height; q++)
+                {
+                    if (isInMap(x + p, y + q)){ //check if still in the map
+                        if (map[x + p, y + q] != 1)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            shouldplace = false; // one of the cells is occupied
+                        }
+                    }
+                    else shouldplace = false; // if outside of map don;t place
+
+                }
+            }
+            if (shouldplace) // place tree and mark which tile it occupies
+            {
+                Debug.Log("Placed a tree");
+                for (int p = 0; p < width; p++)
+                {
+                    for (int q = 0; q < height; q++)
+                    {
+                        map[x + p, y + q] = 1;
+                    }
+                }
+                decoration.SetTile(new Vector3Int(x, y, 0), tree);
+            }
+            else
+            {
+                i--;
+            }
+
+            // move the indicator (0 for moveing up, 1 for moveing right, 2 for down, 3 for left)
+            int randomMovement = Random.Range(0, 4);
+            switch (randomMovement){
+                case 0:
+                    if (isInMap(x, y + (int)(height))) y += (int)(height);
+                    break;
+                case 1:
+                    if (isInMap(x + (int)(width), y)) x += (int)(width);
+                    break;
+                case 2:
+                    if (isInMap(x, y - (int)(height))) y -= (int)(height);
+                    break;
+                case 3:
+                    if (isInMap(x - (int)(width), y)) x -= (int)(width);
+                    break;
             }
         }
     }
